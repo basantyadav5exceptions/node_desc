@@ -99,6 +99,7 @@ exports.getTopicByCategory = (req, res) => {
         // });
 
         // Send only the modified image URLs
+        
         res.status(200).json(topic);
     });
 };
