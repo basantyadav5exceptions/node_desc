@@ -80,9 +80,13 @@ exports.createTopic = async (req, res) => {
 
 
 
-exports.getTopicByCategory = (req, res) => {
-    const category = req.params.category;
-    Topic.getTopicByCategory(category, (err, topic) => {
+exports.getTopicByCategoryAndSearchTopicByTittle = (req, res) => {
+    const payload = {
+        category : req.params.category,
+        tittle : req.query.tittle
+    }
+    
+    Topic.getTopicByCategoryAndSearchTopicByTittle(payload, (err, topic) => {
         if (!topic) {
             return res.status(404).json({ message: 'Topic not found' });
         }
@@ -90,16 +94,6 @@ exports.getTopicByCategory = (req, res) => {
             return res.status(500).json({ message: 'Error retrieving topic' });
         }
        
-        // const modifiedTopics = topic.map(topic => {
-        //     return {
-        //         ...topic,
-        //         image: path.join(__dirname, topic.image).replace('controllers\\', '').replace(/\\/g, '/'),
-        //         video: path.join(__dirname, topic.video).replace('controllers\\', '').replace(/\\/g, '/')
-        //     };
-        // });
-
-        // Send only the modified image URLs
-        
         res.status(200).json(topic);
     });
 };

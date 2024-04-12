@@ -74,9 +74,7 @@ exports.registerUser = async (req, res) => {
                     });
                 }
 
-                const token = jwt.sign({ id: user.id }, 'your_secret_key', {
-                    expiresIn: 86400 // 24 hours
-                });
+                const token = jwt.sign({ id: user.id }, 'basantyadav5exceptions', {expiresIn: '1d'});
 
                 return res.status(201).send(
                     {
@@ -85,7 +83,7 @@ exports.registerUser = async (req, res) => {
                         id: user.id,
                         email: user.email,
                         name : user.name,
-                        image:  user.image
+                        image: `http://localhost:3000/files/images/${user.image.replace(/^.*[\\\/]/, '')}`
                     },
                     token: token
                 }
@@ -134,8 +132,8 @@ exports.loginUser = (req, res) => {
             }
 
             // Generate JWT token
-            const token = jwt.sign({ id: user.id }, 'your_secret_key', {
-                expiresIn: 86400 // 24 hours
+            const token = jwt.sign({ id: user.id }, 'basantyadav5exceptions', {
+                expiresIn: '1d' // 24 hours
             });
 
             // Include token in response
@@ -152,4 +150,11 @@ exports.loginUser = (req, res) => {
             
         }
     });
+};
+
+exports.logoutUser = (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.decode(token);
+    res.clearCookie(token);
+    res.json({ message: 'Logout successful' });
 };

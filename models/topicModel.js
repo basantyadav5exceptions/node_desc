@@ -20,8 +20,16 @@ Topic.createTopic = (newTopic, result) => {
     });
 };
 
-Topic.getTopicByCategory = (category, result) => {
-    sql.query('SELECT * FROM topics WHERE category = ?', category, (err, res) => {
+Topic.getTopicByCategoryAndSearchTopicByTittle = (payload, result) => {
+    let query = 'SELECT * FROM topics WHERE category = ?';
+    let params = [payload.category];
+
+    if (payload.tittle) {
+        query += ' AND tittle LIKE ?'; 
+        params.push(`%${payload.tittle}%`);
+    }
+
+    sql.query(query, params, (err, res) => {
         if (err) {
             result(err, null);
             return;
@@ -33,6 +41,8 @@ Topic.getTopicByCategory = (category, result) => {
         result({ kind: "not_found" }, null);
     });
 };
+
+
 Topic.getTopicById = (topicId, result) => {
     sql.query('SELECT * FROM topics WHERE id = ?', topicId, (err, res) => {
         if (err) {

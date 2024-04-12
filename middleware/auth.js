@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
-const secRetKey = 'secrect_key';
+const secRetKey = 'basantyadav5exceptions';
 
-function verifyToken(req, res, next) {
+const  auth = (req, res, next) =>{
     const reqHeader = req.headers['authorization'];
+   
     if (typeof reqHeader !== 'undefined') {
-        const bearrer = reqHeader.split(" ");
-        const token = bearrer[1];
+        const bearer = reqHeader.split(" ");
+        const token = bearer[1];
         jwt.verify(token, secRetKey, (err, authData) => {
             if (err) {
                 res.status(401).send({
@@ -25,6 +26,6 @@ function verifyToken(req, res, next) {
             data:{}
         });
     }
-};
+}
 
-module.exports = verifyToken;
+module.exports = auth;
