@@ -1,7 +1,7 @@
-const Answer = require('../models/answerModel')
+const ReplyOfComment = require('../models/replyModel')
 
 
-exports.createAnswerOfComment = async (req, res) => {
+exports.createReplyOfComment = async (req, res) => {
     try {
             // Extract required fields from request body
             const { comment_id, answer_desc, user_id } = req.body;
@@ -21,7 +21,7 @@ exports.createAnswerOfComment = async (req, res) => {
             };
             
             // Save Topic in the database
-            Answer.createAnswer(newAnswer, (err, answer) => {
+            ReplyOfComment.createReply(newAnswer, (err, answer) => {
                 if (err) {
                     return res.status(500).send({
                         message: err.message || "Some error occurred while creating the comment."
@@ -45,9 +45,9 @@ exports.createAnswerOfComment = async (req, res) => {
 };
 
 
-exports.getAnswerOfComment = (req, res) => {
+exports.getReplyOfComment = (req, res) => {
     const CommentId = req.params.comment_id;
-    Answer.getAnswerOfCommentByCommentId(CommentId, (err, answer) => {
+    ReplyOfComment.getReplyOfCommentByCommentId(CommentId, (err, answer) => {
         if (!answer && CommentId) {
             return res.status(200).json({ message: 'There are no answer on comment' });
         }

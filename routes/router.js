@@ -14,7 +14,7 @@ const users_controller = require("../controllers/userController");
 const topics_controller = require("../controllers/topicController");
 const comments_controller = require("../controllers/commentController");
 const likes_controller = require("../controllers/likeController");
-const answers_controller = require("../controllers/answerController");
+const reply_controller = require("../controllers/replyController");
 
 router.post("/login", users_controller.loginUser);
 router.post('/logout', users_controller.logoutUser);
@@ -25,8 +25,9 @@ router.get('/get-topics-by-id/:id', topics_controller.getTopicById);
 router.post('/create-comment', comments_controller.createComment);
 router.get('/comments/:tp_id', comments_controller.getCommentByTopicId);
 router.post('/like-unlike-topic', likes_controller.likeUnlikeTopic);
-router.post('/answer-of-comment', answers_controller.createAnswerOfComment);
-router.get('/get-answer-of-comment/:comment_id', answers_controller.getAnswerOfComment);
+router.post('/reply-of-comment', reply_controller.createReplyOfComment);
+router.get('/get-reply-of-comment/:comment_id', reply_controller.getReplyOfComment);
+router.get('/get-like-on-topic/:tp_id', likes_controller.getLikeUnlike);
 
 
 module.exports = router;

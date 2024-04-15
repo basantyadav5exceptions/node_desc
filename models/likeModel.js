@@ -7,7 +7,7 @@ const Like = function (fields) {
     }
 };
 
-Like.findUserIdAndTopicId = ({user_id, tp_id}, result) => {
+Like.findUserIdAndTopicId = (user_id, tp_id, result) => {
     sql.query(`SELECT * FROM likes WHERE user_id = '${user_id}' AND tp_id = '${tp_id}'`, (err, res) => {
         if (err) {
             result(err, null);
@@ -50,6 +50,21 @@ Like.updateLike = (id, data, result) => {
     });
     
 };
+
+Like.getLikeUnlikeByTopicId = (tp_id, result) => {
+    sql.query(`SELECT * FROM likes WHERE tp_id = '${tp_id}' AND like_unlike = 1`, (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        }
+        if (res.length) {
+            result(null, res);
+            return;
+        }
+        result({ kind: "not_found" }, null);
+    });
+};
+
 
 
 

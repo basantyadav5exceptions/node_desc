@@ -2,14 +2,14 @@ const Like  = require('../models/likeModel');
 
 
 exports.likeUnlikeTopic = async (req, res) => {
-    console.log(req)
+ 
     try {
            // Check user_id and tp_id is already exist or not
             Like.findUserIdAndTopicId(req.body.user_id , req.body.tp_id, async (err, data) => {
                 if (err) {
                     if (err.kind === 'not_found') {
                         const newRecord = {
-                            like_unlike: req.body.like_unlike,
+                            like_unlike: 1,
                             user_id: req.body.user_id,
                             tp_id: req.body.tp_id
                            
@@ -39,16 +39,13 @@ exports.likeUnlikeTopic = async (req, res) => {
                         });
                     }
                 } else {
-                  
                     const updateData = 
                      {   
-                        like_unlike : req.body.like_unlike,
-                        user_id:  req.body.user_id, 
-                        tp_id : req.body.tp_id
+                        like_unlike: data.like_unlike === 0 ? 1 : 0
                     }
             
                     // Update user record   
-                    User.updateLike(data.id, updateData, async (err, updatedLike) => {
+                    Like.updateLike(data.id, updateData, async (err, updatedLike) => {
                         if (err) {
                             return res.status(400).send({
                                 message: 'Error updating user information.',
@@ -74,4 +71,19 @@ exports.likeUnlikeTopic = async (req, res) => {
             data: error,
         });
     }
+};
+
+
+exports.getLikeUnlike = (req, res) => {
+    const topicId = req.params.tp_id;
+    Like.getLikeUnlikeByTopicId(topicId, (err, like) => {
+        if (!like && topicId) {
+            return res.status(200).json({ message: 'There are no like on topic' });
+        }
+        if (err) {
+            return res.status(500).json({ message: 'Error retrieving like' });
+        }
+        
+        res.status(200).json(like);
+    });
 };

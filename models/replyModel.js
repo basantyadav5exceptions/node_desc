@@ -2,15 +2,15 @@ const sql = require("../config/dbConnection");
 
 
 // constructor
-const Answer = function (fields) {
+const ReplyOfComment = function (fields) {
     for (const key in fields) {
         this[key] = fields[key];
     }
 };
 
 
-Answer.createAnswer = (newAnswer, result) => {
-    sql.query("INSERT INTO answers SET ?", newAnswer, (err, res) => {
+ReplyOfComment.createReply = (newAnswer, result) => {
+    sql.query("INSERT INTO reply_of_comment SET ?", newAnswer, (err, res) => {
         if (err) {
             result(err, null);
             return;
@@ -20,8 +20,8 @@ Answer.createAnswer = (newAnswer, result) => {
     });
 };
 
-Answer.getAnswerOfCommentByCommentId = (comment_id, result) => {
-    sql.query('SELECT * FROM answers WHERE comment_id = ?', comment_id, (err, res) => {
+ReplyOfComment.getReplyOfCommentByCommentId = (comment_id, result) => {
+    sql.query('SELECT * FROM reply_of_comment WHERE comment_id = ?', comment_id, (err, res) => {
         if (err) {
             result(err, null);
             return;
@@ -35,4 +35,4 @@ Answer.getAnswerOfCommentByCommentId = (comment_id, result) => {
 };
 
 
-module.exports = Answer;
+module.exports = ReplyOfComment;
