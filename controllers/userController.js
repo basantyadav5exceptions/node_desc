@@ -34,71 +34,78 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single('image');
 
 exports.registerUser = async (req, res) => {
-    try {
-        upload(req, res, async (uploadFileErr) => {
-            if (uploadFileErr) {
-                return res.status(400).send({
-                    message: 'Error uploading image',
-                    status: 'error',
-                    data: uploadFileErr,
-                });
-            }
+    upload(req, res, async (uploadFileErr) => {
+        if (uploadFileErr) {
+            return res.status(400).send({
+                message: 'Error uploading image',
+                status: 'error',
+                data: uploadFileErr,
+            });
+        }
 
-            const { name, email, password } = req.body;
+        User.findByEmail(req.body.email, async (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    const { name, email, password } = req.body;
 
-            // Validate request
-            if (!email && !password && !name) {
-                return res.status(400).send({
-                    message: "Name, email, and password are required"
-                });
-            }
+                    // Validate request
+                    if (!email || !password || !name) {
+                        return res.status(400).send({
+                            message: "Name, email, and password are required"
+                        });
+                    }
 
-            // Hash password
-            const hashedPassword = bcrypt.hashSync(password, 10); // 10 is the salt rounds
+                    // Hash password
+                    const hashedPassword = bcrypt.hashSync(password, 10); // 10 is the salt rounds
 
-          
-            // Create a User object
-            const newUser = {
-                name: name,
-                email: email,
-                password: hashedPassword,
-                // Assuming you want to save the image path in the database
-                image: req.file ? req.file.path : null
-            };
+                    // Create a User object
+                    const newUser = {
+                        name: name,
+                        email: email,
+                        password: hashedPassword,
+                        // Assuming you want to save the image path in the database
+                        image: req.file ? req.file.path : null
+                    };
 
-            // Save User in the database
-            User.createUser(newUser, (err, user) => {
-                if (err) {
-                    return res.status(500).send({
-                        message: err.message || "Some error occurred while creating the User."
+                    // Save User in the database
+                    User.createUser(newUser, (err, user) => {
+                        if (err) {
+                            return res.status(500).send({
+                                message: err.message || "Some error occurred while creating the User."
+                            });
+                        }
+
+                        const token = jwt.sign({ id: user.id }, 'basantyadav5exceptions', {expiresIn: '1d'});
+
+                        return res.status(201).send({
+                            message: "User registered successfully",
+                            data: {
+                                id: user.id,
+                                email: user.email,
+                                name: user.name,
+                                image: `http://localhost:3000/files/images/${user.image.replace(/^.*[\\\/]/, '')}`
+                            },
+                            token: token
+                        });
+                    });
+                } else {
+                    return res.status(400).send({
+                        message: 'Something went wrong.',
+                        status: 'error',
+                        data: err,
                     });
                 }
-
-                const token = jwt.sign({ id: user.id }, 'basantyadav5exceptions', {expiresIn: '1d'});
-
-                return res.status(201).send(
-                    {
-                    message: "User registered successfully",
-                    data : {
-                        id: user.id,
-                        email: user.email,
-                        name : user.name,
-                        image: `http://localhost:3000/files/images/${user.image.replace(/^.*[\\\/]/, '')}`
-                    },
-                    token: token
-                }
-                );
-              
-            });
+            } else {
+                return res.status(400).send({
+                    message: 'The email has already taken.',
+                    // status: 'error',
+                    // data: null
+                });
+            }
         });
-    } catch (error) {
-        return res.status(400).send({
-            message: 'Something went wrong, please try again.',
-            status: 'error',
-            data: error,
-        });
-    }
+    });
 };
+
 
 
 exports.loginUser = (req, res) => {
@@ -138,7 +145,7 @@ exports.loginUser = (req, res) => {
 
             // Include token in response
             return res.status(200).send({
-                message: "Login successful",
+                message: "Login successfully",
                 data: {
                     id: user.id,
                     email: user.email,
@@ -152,9 +159,21 @@ exports.loginUser = (req, res) => {
     });
 };
 
+exports.getEmailList = (req, res)=>{
+    User.getEmailForSenLink((err, email) => {
+        if (!email ) {
+            return res.status(400).json({ message: 'There are no email' });
+        }
+        if (err) {
+            return res.status(500).json({ message: 'Error retrieving email' });
+        }
+        res.status(200).json(email);
+    });
+}
+
 exports.logoutUser = (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.decode(token);
     res.clearCookie(token);
-    res.json({ message: 'Logout successful' });
+    res.json({ message: 'Logout successfully' });
 };

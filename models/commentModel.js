@@ -34,13 +34,19 @@ Comment.getCommentByTopicId = (tp_id, result) => {
             r.id AS answer_id, 
             r.answer_desc, 
             r.user_id AS answer_user_id, 
-            r.comment_id AS answer_comment_id 
+            r.comment_id AS answer_comment_id,
+            u.name As name,
+            u.image As image
         FROM 
             comments c 
         LEFT JOIN 
             reply_of_comment r 
         ON 
             c.id = r.comment_id 
+            LEFT JOIN 
+            users u
+        ON 
+            u.id = r.user_id
         WHERE 
             c.tp_id = '${tp_id}'`, (err, res) => {
         if (err) {
@@ -72,8 +78,8 @@ Comment.getCommentByTopicId = (tp_id, result) => {
                     answer_desc: row.answer_desc,
                     user_id: row.answer_user_id,
                     comment_id: row.answer_comment_id,
-                    user_image: row.user_image,
-                    user_name: row.user_name,
+                    user_image: `http://localhost:3000/${row.image.replace(/\\/g, '/')}`,
+                    user_name: row.name,
                 });
             }
         });

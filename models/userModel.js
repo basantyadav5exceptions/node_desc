@@ -7,6 +7,7 @@ const Users = function (fields) {
     }
 };
 
+
 Users.findByEmail = (email, result) => {
     sql.query("SELECT * FROM users WHERE email = ?", email, (err, res) => {
         if (err) {
@@ -35,6 +36,21 @@ Users.createUser = (newUser, result) => {
         result(null, { id: res.insertId, ...newUser });
     });
 };
+
+Users.getEmailForSenLink = (result) => {
+    sql.query('SELECT email FROM users', (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        }
+        if (res.length) {
+            result(null, res);
+            return;
+        }
+        result({ kind: "not_found" }, null);
+    });
+};
+
 
 
 
