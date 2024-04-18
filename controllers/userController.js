@@ -159,15 +159,16 @@ exports.loginUser = (req, res) => {
     });
 };
 
-exports.getEmailList = (req, res)=>{
-    User.getEmailForSenLink((err, email) => {
-        if (!email ) {
-            return res.status(400).json({ message: 'There are no email' });
+exports.getUserList = (req, res)=>{
+    const userId = req.query.id;
+    User.getUserListData(userId, (err, userName) => {
+        if (!userName ) {
+            return res.status(400).json({ message: 'There are no user' });
         }
         if (err) {
-            return res.status(500).json({ message: 'Error retrieving email' });
+            return res.status(500).json({ message: 'Error retrieving user' });
         }
-        res.status(200).json(email);
+        res.status(200).json(userName);
     });
 }
 

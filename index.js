@@ -5,6 +5,7 @@ const indexRouter = require('./routes/router');
 const db = require('./config/dbConnection');
 const app = express();
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 app.use(express.json());
 app.use(bodyParser.json());

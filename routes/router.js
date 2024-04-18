@@ -15,7 +15,7 @@ const topics_controller = require("../controllers/topicController");
 const comments_controller = require("../controllers/commentController");
 const likes_controller = require("../controllers/likeController");
 const reply_controller = require("../controllers/replyController");
-const shareLink_controller = require("../controllers/shareLinkController");
+const shareTopic_controller = require("../controllers/shareLinkController");
 
 router.post("/login", users_controller.loginUser);
 router.post('/logout',auth, users_controller.logoutUser);
@@ -27,10 +27,11 @@ router.post('/create-comment', comments_controller.createComment);
 router.get('/comments/:tp_id', comments_controller.getCommentByTopicId);
 router.post('/like-unlike-topic', likes_controller.likeUnlikeTopic);
 router.post('/reply-of-comment', reply_controller.createReplyOfComment);
-router.get('/get-reply-of-comment/:comment_id', reply_controller.getReplyOfComment);
+// router.get('/get-reply-of-comment/:comment_id', reply_controller.getReplyOfComment);
 router.get('/get-like-on-topic/:tp_id', likes_controller.getLikeUnlike);
-router.get('/get-user-email', users_controller.getEmailList);
-router.post('/send-link-on-useremail', shareLink_controller.sendLinkOnEmail);
+router.get('/get-user-name', users_controller.getUserList);
+// router.post('/share-topic', shareTopic_controller.shareTopic);
+router.post('/send-topic-on-email', shareTopic_controller.shareTopicAndSendEmail);
 
 
 module.exports = router;

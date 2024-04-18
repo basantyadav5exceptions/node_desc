@@ -37,8 +37,8 @@ Users.createUser = (newUser, result) => {
     });
 };
 
-Users.getEmailForSenLink = (result) => {
-    sql.query('SELECT email FROM users', (err, res) => {
+Users.getUserListData = (userId, result) => {
+    sql.query(`SELECT name, email FROM users where not id = '${userId}'`, (err, res) => {
         if (err) {
             result(err, null);
             return;
