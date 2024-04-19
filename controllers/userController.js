@@ -159,6 +159,47 @@ exports.loginUser = (req, res) => {
     });
 };
 
+exports.updateProfile = async (req, res) => {
+
+    upload(req, res, async (uploadFileErr) => {
+        if (uploadFileErr) {
+            return res.status(400).send({
+                message: 'Error uploading image',
+                status: 'error',
+                data: uploadFileErr,
+            });
+        }
+
+    const userId = req.params.id;
+    const updateData = new User({
+        name: req.body.name,
+        image:req.file ? req.file.path : null
+    });
+    User.updateUser(userId, updateData, (err, user) => {
+
+        
+        if (err) {
+            res.status(400).send({
+                message: 'Unable to update user. Please try again after some time.',
+                status: 'error',
+                data: err
+            });
+        } else {
+            res.status(200).send({
+                message: 'User updated successfully.',
+                status: 'success',
+                data: {
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    image: `http://localhost:3000/files/images/${user.image.replace(/^.*[\\\/]/, '')}`
+                },
+            });
+        }
+    });
+    });
+};
+
 exports.getUserList = (req, res)=>{
     const userId = req.query.id;
     User.getUserListData(userId, (err, userName) => {

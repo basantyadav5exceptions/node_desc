@@ -20,6 +20,7 @@ const shareTopic_controller = require("../controllers/shareLinkController");
 router.post("/login", users_controller.loginUser);
 router.post('/logout',auth, users_controller.logoutUser);
 router.post('/register', users_controller.registerUser);
+router.patch('/update-profile/:id', users_controller.updateProfile);
 router.post('/create-topic', topics_controller.createTopic);
 router.get('/search-topics/:category',auth, topics_controller.getTopicByCategoryAndSearchTopicByTittle);
 router.get('/get-topics-by-id/:id',auth, topics_controller.getTopicById);

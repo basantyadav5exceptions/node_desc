@@ -52,6 +52,24 @@ Users.getUserListData = (userId, result) => {
 };
 
 
+Users.updateUser = (id, data, result) => {
+    sql.query("UPDATE users SET ? WHERE id=?", [data, id], (err, res) => {
+        if (err) {
+            result(err, null);
+            return;
+        }
+        sql.query("SELECT * FROM users WHERE id = ?", id, (err, updatedRecord) => {
+            if (err) {
+                result(err, null);
+                return;
+            }
+            
+            result(null, ...updatedRecord);
+        });
+    });
+    
+};
+
 
 
 module.exports = Users;
