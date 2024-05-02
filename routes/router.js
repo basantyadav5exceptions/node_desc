@@ -16,14 +16,15 @@ const comments_controller = require("../controllers/commentController");
 const likes_controller = require("../controllers/likeController");
 const reply_controller = require("../controllers/replyController");
 const shareTopic_controller = require("../controllers/shareLinkController");
+const notification_controller = require("../controllers/notificationController");
 
 router.post("/login", users_controller.loginUser);
 router.post('/logout',auth, users_controller.logoutUser);
 router.post('/register', users_controller.registerUser);
 router.patch('/update-profile/:id', users_controller.updateProfile);
 router.post('/create-topic', topics_controller.createTopic);
-router.get('/search-topics/:category',auth, topics_controller.getTopicByCategoryAndSearchTopicByTittle);
-router.get('/get-topics-by-id/:id',auth, topics_controller.getTopicById);
+router.get('/search-topics/:category', topics_controller.getTopicByCategoryAndSearchTopicByTittle);
+router.get('/get-topics-by-id/:id', topics_controller.getTopicById);
 router.post('/create-comment', comments_controller.createComment);
 router.get('/comments/:tp_id', comments_controller.getCommentByTopicId);
 router.post('/like-unlike-topic', likes_controller.likeUnlikeTopic);
@@ -33,6 +34,8 @@ router.get('/get-like-on-topic/:tp_id', likes_controller.getLikeUnlike);
 router.get('/get-user-name', users_controller.getUserList);
 // router.post('/share-topic', shareTopic_controller.shareTopic);
 router.post('/send-topic-on-email', shareTopic_controller.shareTopicAndSendEmail);
+router.patch('/update-notification-topics', notification_controller.updateNotificationTopic);
+router.get('/get-all-notification', notification_controller.getAllNotificationTopic);
 
 
 module.exports = router;
